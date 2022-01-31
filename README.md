@@ -8,6 +8,6 @@ Git Pull: git pull <br />
 Git Push: git push 
 
 Änderungen pushen: 
-Git add -A
-Git commit -m"commit message"
+Git add -A <br />
+Git commit -m"commit message" <br />
 Git push
