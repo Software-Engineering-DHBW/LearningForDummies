@@ -11,3 +11,7 @@ Git Push: git push
 Git add -A <br />
 Git commit -m"commit message" <br />
 Git push
+
+## .exe finden und ausführen 
+XX\LearningForDummies\Build\LearningForDummies.exe <br />
+Auf Datei klicken und Programm wird gestartet 
