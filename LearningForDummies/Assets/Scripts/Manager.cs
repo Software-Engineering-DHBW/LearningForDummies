@@ -74,7 +74,7 @@ public class Manager : MonoBehaviour
     public void SaveButton()
     {
         SaveSystemJson.instance.SaveToJson(fragenliste, fileName);
-        Debug.Log("Saved data as " + fileName + ".json " + "in " + Application.persistentDataPath);
+        Debug.Log("Saved data as " + fileName + ".json " + "in " + Application.persistentDataPath + "");
     }
 
     public void ShowFilesButton()
