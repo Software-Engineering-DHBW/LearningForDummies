@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/Main.unity
+    path: 
     guid: f07165503b7bfd2468e211f370a49aad
   - enabled: 1
     path: Assets/Scenes/Profil.unity
@@ -14,6 +14,33 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Startmenu.unity
     guid: 2b662022662e0bb46aa4bd01edd6d0d5
+  - enabled: 1
+    path: Assets/Scenes/Frage.unity
+    guid: 85b405165d11fd24d90d64d49034fbcb
+  - enabled: 1
+    path: Assets/Scenes/Importmenu.unity
+    guid: ad10b5f0f545da94a89eb920212f1eca
+  - enabled: 1
+    path: Assets/Scenes/Einstellungen.unity
+    guid: df4f4efa0125de54cb3fd59900e760fe
+  - enabled: 1
+    path: Assets/Scenes/Exportmenu.unity
+    guid: 68ea367307257414882b0060299dac09
+  - enabled: 1
+    path: Assets/Scenes/Katalogauswahl.unity
+    guid: 28776689be074db4f86b1480da108760
+  - enabled: 1
+    path: Assets/Scenes/Levelende.unity
+    guid: f7c6b5a193a83404f886c7de01f7a860
+  - enabled: 1
+    path: Assets/Scenes/Spieleinstellungen.unity
+    guid: c47b2ed50205f2f4a88f0fec04bebb2f
+  - enabled: 1
+    path: Assets/Scenes/Spielmodusauswahl.unity
+    guid: 7a70885c8a1fbb142b5e29f96ea7d56b
+  - enabled: 1
+    path: Assets/Scenes/Statistiken.unity
+    guid: 0642ab4d1c064cd479b654da30c5019d
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 1d2e35567d0b2b943b7752927022c008, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: e836f191f6a8ccb42b1a6820735f7c73, type: 2}
