@@ -29,6 +29,8 @@ public class SaveManager : MonoBehaviour
         Debug.Log("Saved Active PlayerProfile to FileSystem in " + Application.persistentDataPath);
     }
 
+    
+
     public void addQuestionToOwnQuestionCatalogue()
     {
         string questionName;
@@ -71,6 +73,9 @@ public class SaveManager : MonoBehaviour
         }
         Question question = new Question(questionName, answers, rightAnswerPosition);
         createdQuestionCatalogue.questions.Add(question);
+
+        // Code um InputField leer zu machen
+
         Debug.Log("A new Question has been added to the currently active QuestionCatalogue.");
     }
 
@@ -91,12 +96,6 @@ public class SaveManager : MonoBehaviour
         else
         {
             createdQuestionCatalogue.fileName = fileName;
-        }
-
-        if (createdQuestionCatalogue.questions.Count < 5)
-        {
-            Debug.Log("A Catalogue has to have a minimum of 5 added Questions.\nCatalogue Saving Process has been stopped.\nPlease add More Questions.");
-            return; //Exits the Function
         }
         SaveSystem.instance.saveQuestionCatalogueToJson(createdQuestionCatalogue);
 
@@ -174,7 +173,7 @@ public class SaveManager : MonoBehaviour
             SaveSystem.instance.savePlayerProfileToJson(playerProfile);
         }
     }
-
+    //Recent Score hinzufügen (auch in SaveData)
    
 
 }
