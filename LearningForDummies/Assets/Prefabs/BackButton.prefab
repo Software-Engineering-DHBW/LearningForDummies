@@ -146,6 +146,8 @@ GameObject:
   - component: {fileID: 6869801610440151297}
   - component: {fileID: 6869801610440151296}
   - component: {fileID: 6869801610440151299}
+  - component: {fileID: -1106458111067278930}
+  - component: {fileID: 7258179292641435066}
   - component: {fileID: 6869801610440151298}
   m_Layer: 5
   m_Name: BackButton
@@ -268,6 +270,32 @@ MonoBehaviour:
           m_StringArgument: Startmenu
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &-1106458111067278930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6869801610440151301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c9d1dbbabacd449a067b0363a50147, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Panel: {fileID: 0}
+--- !u!114 &7258179292641435066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6869801610440151301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f40d900247e9cd944b8b3e0564996135, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Panel: {fileID: 0}
 --- !u!114 &6869801610440151298
 MonoBehaviour:
   m_ObjectHideFlags: 0
