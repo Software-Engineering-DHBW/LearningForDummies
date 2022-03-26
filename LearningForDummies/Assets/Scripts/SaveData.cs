@@ -2,28 +2,51 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SaveData : MonoBehaviour
+namespace SaveData
 {
-    
-}
 
-[System.Serializable]
-public class Fragenliste
-{
-    public string datei_name;
-    public List<Frage> frage = new List<Frage>();
-}
+    [System.Serializable]
+    public class QuestionCatalogue
+    {
+        public string fileName;
+        public List<Question> questions = new List<Question>();
+    }
 
-[System.Serializable]
-public struct Frage
-{
-    public string frage_name;
-    public string antwort_1;
-    public string antwort_2;
-    public string antwort_3;
-    public string antwort_4;
-    public int richtig;
+    [System.Serializable]
+    public class Question
+    {
+        public string questionName;
+        public List<string> answers;
+        public int rightAnswerPosition;
 
-   
-    
+        public Question(string _questionName, List<string> _answers, int _rightAnswerPosition)
+        {
+            questionName = _questionName;
+            answers = _answers;
+            rightAnswerPosition = _rightAnswerPosition;
+        }
+    }
+
+    [System.Serializable]
+    public class PlayerProfile
+    {
+        public string fileName = "Player";
+        public string userName;
+        public List<Statistic> statistics = new List<Statistic>();
+    }
+
+    [System.Serializable]
+    public class Statistic
+    {
+        public string label;
+        public int score;
+
+        public Statistic(string _label, int _score)
+        {
+            label = _label;
+            score = _score;
+        }
+    }
+
+
 }
