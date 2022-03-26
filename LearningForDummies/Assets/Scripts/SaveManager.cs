@@ -14,7 +14,8 @@ public class SaveManager : MonoBehaviour
     public QuestionCatalogue createdQuestionCatalogue;
 
     [Header("PlayerProfile Stuff")]
-    public PlayerProfile playerProfile;
+    public static PlayerProfile playerProfile;
+    public Sprite[] spriteList;
 
     [Header("General UI Setup")]
     public GameObject username_Panel;
@@ -74,11 +75,6 @@ public class SaveManager : MonoBehaviour
     {
         SaveSystem.instance.savePlayerProfileToJson(playerProfile);
         Debug.Log("Saved Active PlayerProfile to FileSystem in " + Application.persistentDataPath);
-    }
-
-    public void useExistingCatalogueAsOwnQuestionCatalogue(QuestionCatalogue questionCatalogue)
-    {
-
     }
 
     public void addQuestionToOwnQuestionCatalogue()
