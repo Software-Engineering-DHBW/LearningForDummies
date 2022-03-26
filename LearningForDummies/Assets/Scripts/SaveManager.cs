@@ -6,10 +6,39 @@ using UnityEngine.UI;
 
 public class SaveManager : MonoBehaviour
 {
+    //Singleton Declaration
+    public static SaveManager instance;
+
+    [Header("QuestionCatalogue Stuff")]
     public List<QuestionCatalogue> questionCatalogueList;
-    public PlayerProfile playerProfile;
     public QuestionCatalogue createdQuestionCatalogue;
-    public Canvas globalCanvas;
+
+    [Header("PlayerProfile Stuff")]
+    public PlayerProfile playerProfile;
+
+    [Header("General UI Setup")]
+    public GameObject username_Panel;
+    public GameObject questionCount_Label;
+
+    [Header("Input Fields UI")]
+    public InputField questionName_InputField;
+    public InputField questionCatalogueName_Inputfield;
+    public InputField username_Inputfield;
+
+    private void Awake()
+    {
+        // Singleton Pattern
+        if (SaveSystem.instance == null && instance == null)
+        {
+            Debug.Log("No existing SaveSystem Instance found. Creating new one.");
+            instance = this;
+        }
+        else
+        {
+            Debug.Log("Existing SaveSystem Instance found. Secure Self Destruction executed.");
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -23,13 +52,34 @@ public class SaveManager : MonoBehaviour
         playerProfileStatistics();
     }
 
+    public void clearOwnCatalogue()
+    {
+        createdQuestionCatalogue = null;
+    }
+
+    public void clearAllInputFields()
+    {
+        questionName_InputField.GetComponent<Text>().text = "";
+        questionCatalogueName_Inputfield.GetComponent<Text>().text = "";
+        username_Inputfield.GetComponent<Text>().text = "";
+
+        GameObject[] answerInputFields = GameObject.FindGameObjectsWithTag("Created_Question_Answer");
+        foreach (GameObject answerInputField in answerInputFields)
+        {
+            answerInputField.GetComponentInChildren<Text>().text = "";            
+        }
+    }
+
     public void savePlayerProfileToFile()
     {
         SaveSystem.instance.savePlayerProfileToJson(playerProfile);
         Debug.Log("Saved Active PlayerProfile to FileSystem in " + Application.persistentDataPath);
     }
 
-    
+    public void useExistingCatalogueAsOwnQuestionCatalogue(QuestionCatalogue questionCatalogue)
+    {
+
+    }
 
     public void addQuestionToOwnQuestionCatalogue()
     {
@@ -37,7 +87,7 @@ public class SaveManager : MonoBehaviour
         int rightAnswerPosition = 0; //By Default the First Answer is always the correct answer
         List<string> answers = new List<string>(); //The Starting Index of such a List is 0. The First Element of this List can be accessed via "answers[0]".
 
-        questionName = GameObject.Find("InputField_QuestionName").GetComponentInChildren<Text>().text; //UI-InputField for QuestionName must be named "InputField_QuestionName"
+        questionName = questionName_InputField.GetComponent<Text>().text;
         GameObject[] answerInputFields = GameObject.FindGameObjectsWithTag("Created_Question_Answer"); //UI-InputFields for Question-Answers must have Tag "Created_Question_Answer"
 
         foreach (GameObject answerInputField in answerInputFields)
@@ -82,12 +132,12 @@ public class SaveManager : MonoBehaviour
     public void displayQuestionCount()
     {
         int questionCount = createdQuestionCatalogue.questions.Count;
-        GameObject.Find("Label_QuestionCount").GetComponentInChildren<Text>().text = questionCount.ToString(); //UI-Label for the Display of the current Question Count has to be named "Label_QuestionCount"
+        questionCount_Label.GetComponent<Text>().text = questionCount.ToString(); //UI-Label for the Display of the current Question Count has to be named "Label_QuestionCount"
     }
 
     public void saveQuestionCatalogueToFileSystem()
     {
-        string fileName = GameObject.Find("InputField_QuestionCatalogueName").GetComponentInChildren<Text>().text;
+        string fileName = questionCatalogueName_Inputfield.GetComponent<Text>().text;
         if (string.IsNullOrWhiteSpace(fileName))
         {
             Debug.Log("Catalogue Name was found to be Empty or unusable.\nCatalogue Saving Process has been stopped.\nPlease Fill the Catalogue Name InputField with reasonable Information.");
@@ -98,12 +148,12 @@ public class SaveManager : MonoBehaviour
             createdQuestionCatalogue.fileName = fileName;
         }
         SaveSystem.instance.saveQuestionCatalogueToJson(createdQuestionCatalogue);
-
-
+        createdQuestionCatalogue = null;
+        questionCatalogueList = SaveSystem.instance.loadQuestionCataloguesFromJson();
     }
     public void setUsername()
     {
-        string username = GameObject.Find("InputField_Username").GetComponentInChildren<Text>().text;
+        string username = username_Inputfield.GetComponent<Text>().text;
         if (string.IsNullOrWhiteSpace(username))
         {
             Debug.Log("Username was found to be Empty or unusable.\nUsername Saving Process has been stopped.\nPlease Fill the Username InputField with reasonable Information.");
@@ -119,8 +169,7 @@ public class SaveManager : MonoBehaviour
     public void openUsernamePanel()
     {
         //Open a UI-Panel with an InputField for the User to Input his Username
-        GameObject usernamePanel = globalCanvas.transform.Find("Panel_Username").gameObject; //The Panel named "Panel_Username" must be a direct child of the global UI canvas
-        usernamePanel.SetActive(true);
+        username_Panel.SetActive(true);
     }
 
     public void playerProfileStatistics()
@@ -173,7 +222,6 @@ public class SaveManager : MonoBehaviour
             SaveSystem.instance.savePlayerProfileToJson(playerProfile);
         }
     }
-    //Recent Score hinzufügen (auch in SaveData)
    
 
 }
