@@ -71,6 +71,10 @@ public class SaveManager : MonoBehaviour
         questionCatalogueList = SaveSystem.instance.loadQuestionCataloguesFromJson();
         createdQuestionCatalogue = new QuestionCatalogue();
         
+        if(questionCatalogueList == null)
+        {
+            questionCatalogueList = new List<QuestionCatalogue>();
+        }
         if (playerProfile == null)
         {
             openUsernamePanel();
@@ -81,6 +85,30 @@ public class SaveManager : MonoBehaviour
         }
 
     }
+
+    public void OnClickCopyRawTextFromJsonToClipboard(int catalogue_ID)
+    {
+        Debug.Log("My ID is:" + catalogue_ID);
+
+        Debug.Log("----------\nSTRING COPY TO CLIPBOARD IN PROGRSSS\n----------");
+
+        string catalogueName = questionCatalogueList[catalogue_ID].fileName + ".qcat";
+
+        SaveSystem.instance.loadTextRawFromJson(catalogueName);
+
+        string catalogueRawText = SaveSystem.instance.loadTextRawFromJson(catalogueName);
+
+        if (catalogueRawText != null)
+        {
+            GUIUtility.systemCopyBuffer = catalogueRawText;
+        }
+        else
+        {
+            GUIUtility.systemCopyBuffer = "Didn't Work :(";
+        }
+        Debug.Log("----------\nSTRING COPY TO CLIPBOARD DONE\n----------");
+    }
+
 
     public void OnProfileArrowClick(bool right)
     {
@@ -198,8 +226,10 @@ public class SaveManager : MonoBehaviour
                 }
             }
             newCatalogueItem.name = index.ToString();
+            UnityAction callback0 = () => SaveManager.instance.OnClickCopyRawTextFromJsonToClipboard(int.Parse(newCatalogueItem.name));
             UnityAction callback = () => SaveManager.instance.setQuestionCatalogueToEdit(int.Parse(newCatalogueItem.name));
             Button[] buttons = newCatalogueItem.GetComponentsInChildren<Button>();
+            buttons[0].onClick.AddListener(callback0);
             buttons[1].onClick.AddListener(callback);
             buttons[1].onClick.AddListener(callback2);
             buttons[1].onClick.AddListener(callback3);
@@ -327,8 +357,11 @@ public class SaveManager : MonoBehaviour
         SaveSystem.instance.saveQuestionCatalogueToJson(createdQuestionCatalogue);
         clearOwnCatalogue();
         questionCatalogueList = SaveSystem.instance.loadQuestionCataloguesFromJson();
+        displayQuestionCount();
+        playerProfileStatistics();
 
     }
+
     public void setUsername()
     {
         string username = username_Inputfield.text;
