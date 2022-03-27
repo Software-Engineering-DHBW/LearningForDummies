@@ -25,7 +25,17 @@ public class SessionData
         }
 
         questionCount_total = Mathf.RoundToInt(questionCount_total * percentage);
-        questionList = (List<Question>)questionList.Take(questionCount_total);
+        Debug.Log("Partly of new QuestionCount is: " + questionCount_total);
+        //questionList = (List<Question>)questionList.Take(questionCount_total); //Problem
+
+        List<Question> tempList = new List<Question>();
+        for (int i = 0; i < questionCount_total; i++)
+        {
+            tempList.Add(questionList[i]);
+        }
+        questionList = tempList;
+        Debug.Log("The actual number of used Questions from Catalogue is: " + questionList.Count);
+
     }
 
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using SaveData;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 
 public class SaveManager : MonoBehaviour
 {
@@ -23,6 +24,11 @@ public class SaveManager : MonoBehaviour
     public GameObject username_Panel;
     public Text questionCount_Label;
 
+    [Header("Profile UI Setup")]
+    public Image profilePicture;
+    public TMP_InputField profileName_Inputfield;
+    public int currentProfilePicture_Selection;
+
     [Header("Input Fields UI")]
     public TMP_InputField questionName_InputField;
     public TMP_InputField questionCatalogueName_Inputfield;
@@ -32,6 +38,16 @@ public class SaveManager : MonoBehaviour
     [Header("Question Catalogue UI before Session Start")]
     public GameObject contentPanel;
     public GameObject cataloguePrefab;
+
+    public GameObject contentPanelAndStatistic;
+    public GameObject cataloguePrefabAndStatistic;
+
+    public GameObject sessionSetup_Panel;
+    public TMP_Text cataloguename_display;
+    public GameObject catalogueSelect_Panel;
+
+    public GameObject catalogueCreation_Panel;
+    public GameObject catalogueAndStatisticSelectPanel;
 
 
     private void Awake()
@@ -53,7 +69,7 @@ public class SaveManager : MonoBehaviour
     {
         playerProfile = SaveSystem.instance.loadPlayerProfileFromJson("Player.pp");
         questionCatalogueList = SaveSystem.instance.loadQuestionCataloguesFromJson();
-
+        createdQuestionCatalogue = new QuestionCatalogue();
         
         if (playerProfile == null)
         {
@@ -66,20 +82,157 @@ public class SaveManager : MonoBehaviour
 
     }
 
+    public void OnProfileArrowClick(bool right)
+    {
+        if (right)
+        {
+            currentProfilePicture_Selection++;
+
+            if(currentProfilePicture_Selection > spriteList.Length - 1)
+            {
+                currentProfilePicture_Selection = 0;
+            }
+            profilePicture.GetComponent<Image>().sprite = spriteList[currentProfilePicture_Selection];
+        }
+        else
+        {
+            currentProfilePicture_Selection--;
+
+            if (currentProfilePicture_Selection < 0)
+            {
+                currentProfilePicture_Selection = spriteList.Length - 1;
+            }
+        }
+        profilePicture.GetComponent<Image>().sprite = spriteList[currentProfilePicture_Selection];
+    }
+
+    public void fillProfilePanel()
+    {
+        currentProfilePicture_Selection = playerProfile.profilePicture_ID;
+        profilePicture.GetComponent<Image>().sprite = spriteList[currentProfilePicture_Selection];
+        profileName_Inputfield.text = playerProfile.userName;
+    }
+    public void OnClickSaveProfileSettings()
+    {
+        if (string.IsNullOrWhiteSpace(profileName_Inputfield.text))
+        {
+            Debug.Log("Username not allowed!");
+            return;
+        }
+        playerProfile.userName = profileName_Inputfield.text;
+        playerProfile.profilePicture_ID = currentProfilePicture_Selection;
+        savePlayerProfileToFile();
+    }
+
+    private void openSessionSetupPanel()
+    {
+        catalogueSelect_Panel.SetActive(false);
+        sessionSetup_Panel.SetActive(true);
+    }
+
+    private void openCatalogueCreationPanel()
+    {
+        catalogueAndStatisticSelectPanel.SetActive(false);
+        catalogueCreation_Panel.SetActive(true);
+        questionCatalogueName_Inputfield.text = createdQuestionCatalogue.fileName;
+        questionCatalogueName_Inputfield.interactable = false;
+    }
+
+    private void setQuestionCatalogueToPlay(int nameID)
+    {
+        Debug.Log("My name is:" + nameID);
+        chosenQuestionCatalogueToPlay = questionCatalogueList[nameID];
+        Debug.Log(chosenQuestionCatalogueToPlay.fileName + " " + chosenQuestionCatalogueToPlay.questions.Count);
+    }
+    private void setQuestionCatalogueToEdit(int nameID)
+    {
+        Debug.Log("My name is:" + nameID);
+        createdQuestionCatalogue = questionCatalogueList[nameID];
+        Debug.Log(createdQuestionCatalogue.fileName + " " + createdQuestionCatalogue.questions.Count);
+    }
+
     public void fillCatalogueScrollList()
     {
+        int index = 0;
+        UnityAction callback2 = () => SaveManager.instance.openSessionSetupPanel();
+        UnityAction callback3 = () => SaveManager.instance.fillCatalogueNameInSessionSetupPanel();
+
         foreach (QuestionCatalogue questionCatalogue in questionCatalogueList)
         {
             GameObject newCatalogueItem = Instantiate(cataloguePrefab) as GameObject;
             newCatalogueItem.transform.parent = contentPanel.transform;
             newCatalogueItem.transform.localScale = Vector3.one;
             newCatalogueItem.GetComponentInChildren<TMP_Text>().text = questionCatalogue.fileName;
+            newCatalogueItem.name = index.ToString();
+
+            UnityAction callback = () => SaveManager.instance.setQuestionCatalogueToPlay( int.Parse(newCatalogueItem.name));
+
+            newCatalogueItem.GetComponentInChildren<Button>().onClick.AddListener(callback);
+            newCatalogueItem.GetComponentInChildren<Button>().onClick.AddListener(callback2);
+            newCatalogueItem.GetComponentInChildren<Button>().onClick.AddListener(callback3);
+
+            index++;
         }
+    }
+
+    public void fillCatalogueAndStaticsticScrollList()
+    {
+        int index = 0;
+        UnityAction callback2 = () => SaveManager.instance.openCatalogueCreationPanel();
+        UnityAction callback3 = () => SaveManager.instance.displayQuestionCount();
+
+        foreach (QuestionCatalogue questionCatalogue in questionCatalogueList)
+        {
+            GameObject newCatalogueItem = Instantiate(cataloguePrefabAndStatistic) as GameObject;
+            newCatalogueItem.transform.parent = contentPanelAndStatistic.transform;
+            newCatalogueItem.transform.localScale = Vector3.one;
+            TMP_Text[] texts = newCatalogueItem.GetComponentsInChildren<TMP_Text>();
+            texts[0].text = questionCatalogue.fileName;
+
+            foreach (Statistic statistic in playerProfile.statistics)
+            {
+                Debug.Log("---!!!--- Checking Statistic Label: " + statistic.label);
+                if (string.Equals(questionCatalogue.fileName, statistic.label))
+                {
+                    texts[1].text = "Highscore:\n" + statistic.score;
+                }
+            }
+            newCatalogueItem.name = index.ToString();
+            UnityAction callback = () => SaveManager.instance.setQuestionCatalogueToEdit(int.Parse(newCatalogueItem.name));
+            Button[] buttons = newCatalogueItem.GetComponentsInChildren<Button>();
+            buttons[1].onClick.AddListener(callback);
+            buttons[1].onClick.AddListener(callback2);
+            buttons[1].onClick.AddListener(callback3);
+
+            index++;
+        }
+    }
+
+    public void clearCatalogueScrollList()
+    {
+        foreach (Transform child in contentPanel.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    public void clearCatalogueScrollListAndStatistic()
+    {
+        foreach (Transform child in contentPanelAndStatistic.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    private void fillCatalogueNameInSessionSetupPanel()
+    {
+        Debug.Log("Trying to change Display to: " + chosenQuestionCatalogueToPlay.fileName);
+        cataloguename_display.text = chosenQuestionCatalogueToPlay.fileName;
     }
 
     public void clearOwnCatalogue()
     {
-        createdQuestionCatalogue = null;
+        createdQuestionCatalogue = new QuestionCatalogue();
         questionCatalogueName_Inputfield.text = "";
         questionCatalogueName_Inputfield.interactable = true;
     }
@@ -87,7 +240,7 @@ public class SaveManager : MonoBehaviour
     public void clearAllInputFields()
     {
         questionName_InputField.text = "";
-        username_Inputfield.text = "";
+        //username_Inputfield.text = "";
 
         foreach (TMP_InputField answerInputField in answer_Inputfields)
         {
@@ -172,7 +325,6 @@ public class SaveManager : MonoBehaviour
             createdQuestionCatalogue.fileName = fileName;
         }
         SaveSystem.instance.saveQuestionCatalogueToJson(createdQuestionCatalogue);
-        //createdQuestionCatalogue = null;
         clearOwnCatalogue();
         questionCatalogueList = SaveSystem.instance.loadQuestionCataloguesFromJson();
 

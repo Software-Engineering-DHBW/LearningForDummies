@@ -6,6 +6,8 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+
     public SessionData sessionData;
     public SessionPlayerData player1;
     public SessionPlayerData player2;
@@ -16,15 +18,19 @@ public class GameManager : MonoBehaviour
     public int turn = 1; //Shows which Player-Turn it is: 1 for Player1 and 2 for Player2
 
     [Header("UI Setup")]
+    public GameObject session_Panel;
+
     public Image player1_Picture;
     public TMP_Text player1_Name;
     public TMP_Text player1_Score;
 
+    public GameObject player2_UI_Row;
     public Image player2_Picture;
     public TMP_Text player2_Name;
     public TMP_Text player2_Score;
 
     public TMP_Text questionCount;
+    public TMP_Text turn_Display;
     public GameObject tappingProtection_Panel;
 
     [Header("Session Results UI Setup")]
@@ -33,6 +39,7 @@ public class GameManager : MonoBehaviour
     public TMP_Text result_Player1_Name;
     public TMP_Text result_Player1_Score;
 
+    public GameObject player2_UI_Result_Row;
     public Image result_Player2_Picture;
     public TMP_Text result_Player2_Name;
     public TMP_Text result_Player2_Score;
@@ -50,10 +57,33 @@ public class GameManager : MonoBehaviour
     public TMP_Text answer4;
 
 
+    private void Awake()
+    {
+        // Singleton Pattern
+        if (GameManager.instance == null && instance == null)
+        {
+            Debug.Log("No existing GameManager Instance found. Creating new one.");
+            instance = this;
+        }
+        else
+        {
+            Debug.Log("Existing GameManager Instance found. Secure Self Destruction executed.");
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        sessionData = new SessionData();
+        player1 = new SessionPlayerData();
+        player2 = new SessionPlayerData();
+    }
+
     public void startSession(float percentage)
     {
         sessionData.sessionCatalogue = SaveManager.instance.chosenQuestionCatalogueToPlay;
         sessionData.fillSessionData(percentage);
+        Debug.Log("Initiating Session with Catalogue " + sessionData.sessionCatalogue.fileName + " with " + sessionData.questionList.Count + " chosen Questions!");
     }
 
     private void initiatePlayer1Data() //Should get called only once on start
@@ -64,20 +94,25 @@ public class GameManager : MonoBehaviour
 
     public void fillPlayerUI() //Should get called only once on start
     {
+        initiatePlayer1Data();
         player1_Picture.GetComponent<Image>().sprite = SaveManager.instance.spriteList[player1.profilePicture_ID];
-        player1_Name.GetComponent<Text>().text = player1.playerName;
-        player1_Score.GetComponent<Text>().text = (player1.currentScore).ToString();
+        player1_Name.text = player1.playerName;
+        player1_Score.text = (player1.currentScore).ToString();
 
         if (multiplayer)
         {
+            player2_UI_Row.SetActive(true);
             player2_Picture.GetComponent<Image>().sprite = SaveManager.instance.spriteList[player2.profilePicture_ID];
-            player2_Name.GetComponent<Text>().text = player2.playerName;
-            player1_Score.GetComponent<Text>().text = (player2.currentScore).ToString();
+            player2_Name.text = player2.playerName;
+            player2_Score.text = (player2.currentScore).ToString();
+            turn_Display.text = "Turn 1: " + player1_Name;
         }
+        
+        updateScreenScoreAndQuestionCount();
     }
-    public void setMultiplayerTrue()
+    public void setMultiplayerTrue(bool multi)
     {
-        multiplayer = true;
+        multiplayer = multi;
     }
 
     private void updatePlayerScore() //Right Answer gives 10 Points to the Score
@@ -87,7 +122,7 @@ public class GameManager : MonoBehaviour
             player1.currentScore += scorePerQuestion;
             player1_clickedCorrectAnswer = false;
         }
-        if(multiplayer && player2_clickedCorrectAnswer)
+        if(player2_clickedCorrectAnswer)
         {
             player2.currentScore += scorePerQuestion;
             player2_clickedCorrectAnswer = false;
@@ -96,12 +131,12 @@ public class GameManager : MonoBehaviour
 
     public void updateScreenScoreAndQuestionCount()
     {
-        player1_Score.GetComponent<Text>().text = (player1.currentScore).ToString();
+        player1_Score.text = "Score: " + (player1.currentScore).ToString();
         if (multiplayer)
         {
-            player2_Score.GetComponent<Text>().text = (player2.currentScore).ToString();
+            player2_Score.text = "Score: " + (player2.currentScore).ToString();
         }
-        questionCount.GetComponent<Text>().text = (sessionData.questionIndex + 1).ToString() + " / " + sessionData.questionCount_total.ToString();
+        questionCount.text = (sessionData.questionIndex + 1).ToString() + " / " + sessionData.questionCount_total.ToString();
     }
     private void showRightAnswer() //And tap on Screen to continue
     {
@@ -129,7 +164,6 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
-
     public void buttonPress(int answerID)
     {
         if(!multiplayer)
@@ -138,8 +172,8 @@ public class GameManager : MonoBehaviour
                 player1_clickedCorrectAnswer = true;
                 updatePlayerScore();
 
-            sessionData.questionIndex++;
             updateScreenScoreAndQuestionCount();
+            sessionData.questionIndex++;
             showRightAnswer();
         }
         else if (turn == 1)
@@ -147,11 +181,12 @@ public class GameManager : MonoBehaviour
             if (answerID == sessionData.rightAnswerPosition)
                 player1_clickedCorrectAnswer = true;
             turn = 2;
+            turn_Display.text = "Turn " + turn + ": " + player2.playerName;
         }
         else if (turn == 2)
         {
             if (answerID == sessionData.rightAnswerPosition)
-                player1_clickedCorrectAnswer = true;
+                player2_clickedCorrectAnswer = true;
             turn = 1;
             updatePlayerScore();
             sessionData.questionIndex++;
@@ -161,13 +196,17 @@ public class GameManager : MonoBehaviour
     }
     public void nextQuestion() // Used by a button on Interaction Blocking Panel
     {
-        if (sessionData.questionIndex > sessionData.questionCount_total)
+        if (sessionData.questionIndex == sessionData.questionCount_total)
         {
             showSessionResults();
             return;
         }
-
+        updateScreenScoreAndQuestionCount();
         fillNextQuestion();
+        if (multiplayer)
+        {
+            turn_Display.text = "Turn " + turn + ": " + player1.playerName;
+        }
         tappingProtection_Panel.SetActive(false);
     }
 
@@ -175,11 +214,11 @@ public class GameManager : MonoBehaviour
     {
         sessionData.activeQuestion = sessionData.questionList[sessionData.questionIndex];
         sessionData.rightAnswerPosition = sessionData.activeQuestion.rightAnswerPosition;
-        question.GetComponent<Text>().text = sessionData.activeQuestion.questionName;
-        answer1.GetComponent<Text>().text = sessionData.activeQuestion.answers[0];
-        answer2.GetComponent<Text>().text = sessionData.activeQuestion.answers[1];
-        answer3.GetComponent<Text>().text = sessionData.activeQuestion.answers[2];
-        answer4.GetComponent<Text>().text = sessionData.activeQuestion.answers[3];
+        question.text = sessionData.activeQuestion.questionName;
+        answer1.text = sessionData.activeQuestion.answers[0];
+        answer2.text = sessionData.activeQuestion.answers[1];
+        answer3.text = sessionData.activeQuestion.answers[2];
+        answer4.text = sessionData.activeQuestion.answers[3];
         answer1_Button.GetComponent<Image>().color = Color.white;
         answer2_Button.GetComponent<Image>().color = Color.white;
         answer3_Button.GetComponent<Image>().color = Color.white;
@@ -189,17 +228,34 @@ public class GameManager : MonoBehaviour
 
     private void showSessionResults()
     {
+        Debug.Log("-------\n-------Session Finished--------\n------");
+        session_Panel.SetActive(false);
         sessionResults_Panel.SetActive(true);
         result_Player1_Picture.GetComponent<Image>().sprite = SaveManager.instance.spriteList[player1.profilePicture_ID];
-        result_Player1_Name.GetComponent<Text>().text = player1.playerName;
-        result_Player1_Score.GetComponent<Text>().text = (player1.currentScore).ToString();
+        result_Player1_Name.text = player1.playerName;
+        result_Player1_Score.text = (player1.currentScore).ToString();
         if (multiplayer)
         {
+            player2_UI_Result_Row.SetActive(true);
             result_Player2_Picture.GetComponent<Image>().sprite = SaveManager.instance.spriteList[player2.profilePicture_ID];
-            result_Player2_Name.GetComponent<Text>().text = player2.playerName;
-            result_Player2_Score.GetComponent<Text>().text = (player2.currentScore).ToString();
+            result_Player2_Name.text = player2.playerName;
+            result_Player2_Score.text = (player2.currentScore).ToString();
         }
 
         SaveManager.instance.updateStatistic(sessionData.sessionCatalogue.fileName, player1.currentScore);
+    }
+
+    public void clearSessionData()
+    {
+        SaveManager.instance.chosenQuestionCatalogueToPlay = null;
+        player1 = new SessionPlayerData();
+        player2 = new SessionPlayerData();
+        sessionData = new SessionData();
+        multiplayer = false;
+        player1_clickedCorrectAnswer = false;
+        player2_clickedCorrectAnswer = false;
+        player2_UI_Row.SetActive(false);
+        player2_UI_Result_Row.SetActive(false);
+        turn = 1;
     }
 }
