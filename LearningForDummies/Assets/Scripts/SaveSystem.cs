@@ -51,6 +51,28 @@ public class SaveSystem : MonoBehaviour
         Debug.Log("PlayerProfile has been successfully saved to the FileSystem");
     }
 
+    public string loadTextRawFromJson(string catalogueName)
+    {
+        string extension = "*.qcat"; // The "*" ist really important. It is a placeholder for the rest of the File
+        string[] Files = Directory.GetFiles(Application.persistentDataPath, extension);
+        foreach (string file in Files)
+        {
+            Debug.Log("The following file has been found: " + Path.GetFileName(file));
+            if (string.Equals(catalogueName, Path.GetFileName(file)))
+            {
+                string DataFromJson = File.ReadAllText(file);
+                Debug.Log("----------\nERFOLGREICH\n----------");
+                return DataFromJson;
+            }
+        }
+        if (Files.Length == 0)
+        {
+            Debug.Log("No files have been found with the extension " + extension);
+            return null;
+        }
+        Debug.Log("----------\nOPERATION FAILED\n----------");
+        return null;
+    }
 
     public List<QuestionCatalogue> loadQuestionCataloguesFromJson()
     {
