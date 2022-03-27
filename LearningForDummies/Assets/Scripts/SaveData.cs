@@ -32,6 +32,7 @@ namespace SaveData
     {
         public string fileName = "Player";
         public string userName;
+        public int profilePicture_ID = 0;
         public List<Statistic> statistics = new List<Statistic>();
     }
 

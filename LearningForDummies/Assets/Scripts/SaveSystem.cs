@@ -15,7 +15,7 @@ public class SaveSystem : MonoBehaviour
 
     private void Awake()
     {
-        filePath = Application.persistentDataPath + "/Test.cat";
+        filePath = Application.persistentDataPath + "/Test.qcat";
         playerProfilePath = Application.persistentDataPath + "/Player.pp";
 
         Debug.Log(filePath);
@@ -37,7 +37,7 @@ public class SaveSystem : MonoBehaviour
     
     public void saveQuestionCatalogueToJson(QuestionCatalogue _questionCatalogue)
     {
-        string fileName = "/" + _questionCatalogue.fileName + ".cat";
+        string fileName = "/" + _questionCatalogue.fileName + ".qcat";
         string content = JsonUtility.ToJson(_questionCatalogue);
         System.IO.File.WriteAllText(Application.persistentDataPath + fileName, content);
         Debug.Log("QuestionCatalogue has been successfully saved to the FileSystem");
@@ -54,7 +54,7 @@ public class SaveSystem : MonoBehaviour
 
     public List<QuestionCatalogue> loadQuestionCataloguesFromJson()
     {
-        string extension = ".cat";
+        string extension = "*.qcat";
         List<QuestionCatalogue> allCatalogues = new List<QuestionCatalogue>();
         string[] Files = Directory.GetFiles(Application.persistentDataPath, extension);
         foreach (string file in Files)
@@ -70,13 +70,13 @@ public class SaveSystem : MonoBehaviour
             Debug.Log("No files with the extension " + extension + " have been found.");
             return null;
         }
-        Debug.Log("The List of found QuestionCatalogues contains " + allCatalogues.Count + "QuestionCatalogues.");
+        Debug.Log("The List of found QuestionCatalogues contains " + allCatalogues.Count + " QuestionCatalogues.");
         return allCatalogues;
     }
 
     public PlayerProfile loadPlayerProfileFromJson(string fileName)
     {
-        string extension = ".pp";
+        string extension = "*.pp"; // The "*" ist really important. It is a placeholder for the rest of the File
         string[] Files = Directory.GetFiles(Application.persistentDataPath, extension);
         foreach (string file in Files)
         {

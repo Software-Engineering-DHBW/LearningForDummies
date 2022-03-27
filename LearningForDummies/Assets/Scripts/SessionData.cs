@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SaveData;
+using System.Linq;
 
 public class SessionData
 {
-    QuestionCatalogue sessionCatalogue;
-    List<Question> questionList;
-    Question activeQuestion;
-    string questionString, answer_1, answer_2, answer_3, answer_4;
-    int rightAnswerPosition, questionCount_total, questionCount_current, questionIndex = 0;
+    public QuestionCatalogue sessionCatalogue;
+    public List<Question> questionList;
+    public Question activeQuestion;
+    public int rightAnswerPosition, questionCount_total, questionIndex = 0;
 
     public void fillSessionData(float percentage)
     {
@@ -24,8 +24,8 @@ public class SessionData
             questionList[randomIndex] = tempQ;
         }
 
-
-
+        questionCount_total = Mathf.RoundToInt(questionCount_total * percentage);
+        questionList = (List<Question>)questionList.Take(questionCount_total);
     }
 
 
