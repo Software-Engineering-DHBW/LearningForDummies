@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,42 +16,45 @@ public class GameManager : MonoBehaviour
     public int turn = 1; //Shows which Player-Turn it is: 1 for Player1 and 2 for Player2
 
     [Header("UI Setup")]
-    public SpriteRenderer player1_Picture;
-    public Text player1_Name;
-    public Text player1_Score;
+    public Image player1_Picture;
+    public TMP_Text player1_Name;
+    public TMP_Text player1_Score;
 
-    public SpriteRenderer player2_Picture;
-    public Text player2_Name;
-    public Text player2_Score;
+    public Image player2_Picture;
+    public TMP_Text player2_Name;
+    public TMP_Text player2_Score;
 
-    public Text questionCount;
+    public TMP_Text questionCount;
     public GameObject tappingProtection_Panel;
 
     [Header("Session Results UI Setup")]
     public GameObject sessionResults_Panel;
-    public SpriteRenderer result_Player1_Picture;
-    public Text result_Player1_Name;
-    public Text result_Player1_Score;
+    public Image result_Player1_Picture;
+    public TMP_Text result_Player1_Name;
+    public TMP_Text result_Player1_Score;
 
-    public SpriteRenderer result_Player2_Picture;
-    public Text result_Player2_Name;
-    public Text result_Player2_Score;
-
-
-
+    public Image result_Player2_Picture;
+    public TMP_Text result_Player2_Name;
+    public TMP_Text result_Player2_Score;
 
 
     [Header("Question UI Setup")]
-    public Text question;
+    public TMP_Text question;
     public Button answer1_Button;
     public Button answer2_Button;
     public Button answer3_Button;
     public Button answer4_Button;
-    public Text answer1;
-    public Text answer2;
-    public Text answer3;
-    public Text answer4;
+    public TMP_Text answer1;
+    public TMP_Text answer2;
+    public TMP_Text answer3;
+    public TMP_Text answer4;
 
+
+    public void startSession(float percentage)
+    {
+        sessionData.sessionCatalogue = SaveManager.instance.chosenQuestionCatalogueToPlay;
+        sessionData.fillSessionData(percentage);
+    }
 
     private void initiatePlayer1Data() //Should get called only once on start
     {
@@ -60,16 +64,20 @@ public class GameManager : MonoBehaviour
 
     public void fillPlayerUI() //Should get called only once on start
     {
-        player1_Picture.sprite = SaveManager.instance.spriteList[player1.profilePicture_ID];
+        player1_Picture.GetComponent<Image>().sprite = SaveManager.instance.spriteList[player1.profilePicture_ID];
         player1_Name.GetComponent<Text>().text = player1.playerName;
         player1_Score.GetComponent<Text>().text = (player1.currentScore).ToString();
 
         if (multiplayer)
         {
-            player2_Picture.sprite = SaveManager.instance.spriteList[player2.profilePicture_ID];
+            player2_Picture.GetComponent<Image>().sprite = SaveManager.instance.spriteList[player2.profilePicture_ID];
             player2_Name.GetComponent<Text>().text = player2.playerName;
             player1_Score.GetComponent<Text>().text = (player2.currentScore).ToString();
         }
+    }
+    public void setMultiplayerTrue()
+    {
+        multiplayer = true;
     }
 
     private void updatePlayerScore() //Right Answer gives 10 Points to the Score
@@ -182,12 +190,12 @@ public class GameManager : MonoBehaviour
     private void showSessionResults()
     {
         sessionResults_Panel.SetActive(true);
-        result_Player1_Picture.sprite = SaveManager.instance.spriteList[player1.profilePicture_ID];
+        result_Player1_Picture.GetComponent<Image>().sprite = SaveManager.instance.spriteList[player1.profilePicture_ID];
         result_Player1_Name.GetComponent<Text>().text = player1.playerName;
         result_Player1_Score.GetComponent<Text>().text = (player1.currentScore).ToString();
         if (multiplayer)
         {
-            result_Player2_Picture.sprite = SaveManager.instance.spriteList[player2.profilePicture_ID];
+            result_Player2_Picture.GetComponent<Image>().sprite = SaveManager.instance.spriteList[player2.profilePicture_ID];
             result_Player2_Name.GetComponent<Text>().text = player2.playerName;
             result_Player2_Score.GetComponent<Text>().text = (player2.currentScore).ToString();
         }
