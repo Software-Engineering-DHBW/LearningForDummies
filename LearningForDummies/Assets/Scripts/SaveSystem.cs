@@ -34,6 +34,14 @@ public class SaveSystem : MonoBehaviour
         }
 
     }
+
+    public void saveRawJsonTextToJson(string catalogueName, string data)
+    {
+        string filename = "/" + catalogueName + ".qcat";
+        string content = data;
+        System.IO.File.WriteAllText(Application.persistentDataPath + filename, content);
+        Debug.Log("Speicherung erfolgt als... " + filename);
+    }
     
     public void saveQuestionCatalogueToJson(QuestionCatalogue _questionCatalogue)
     {

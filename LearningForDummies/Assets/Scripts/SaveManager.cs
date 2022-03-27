@@ -16,6 +16,10 @@ public class SaveManager : MonoBehaviour
     public QuestionCatalogue createdQuestionCatalogue;
     public QuestionCatalogue chosenQuestionCatalogueToPlay;
 
+    [Header("Import UI")]
+    public TMP_InputField rawJsonText_InputField;
+    public TMP_InputField enteredCatalogueName;
+
     [Header("PlayerProfile Stuff")]
     public static PlayerProfile playerProfile;
     public Sprite[] spriteList;
@@ -84,6 +88,33 @@ public class SaveManager : MonoBehaviour
             playerProfileStatistics();
         }
 
+    }
+
+    public void saveImportedQuestionCatalogueToFileSystem()
+    {
+        if (string.IsNullOrWhiteSpace(enteredCatalogueName.text) || string.IsNullOrWhiteSpace(rawJsonText_InputField.text))
+        {
+            Debug.Log("ERROR: Katalogname oder Import-Textfeld sind leer!");
+            return;
+        }
+        else
+        {
+            SaveSystem.instance.saveRawJsonTextToJson(enteredCatalogueName.text, rawJsonText_InputField.text);
+            questionCatalogueList = SaveSystem.instance.loadQuestionCataloguesFromJson();
+            playerProfileStatistics();
+            clearImportInputFields();
+        }
+    }
+
+    public void clearImportInputFields()
+    {
+        enteredCatalogueName.text = "";
+        rawJsonText_InputField.text = "";
+    }
+
+    public void OnClickPasteClipboardIntoInputField()
+    {
+        rawJsonText_InputField.text = GUIUtility.systemCopyBuffer;
     }
 
     public void OnClickCopyRawTextFromJsonToClipboard(int catalogue_ID)
