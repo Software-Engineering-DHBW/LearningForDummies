@@ -106,6 +106,24 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
+    public QuestionCatalogue addStandard(string filename)
+    {
+        string path = "Standard/";
+        string _filename = path + filename;
+        Debug.Log(filename);
+        TextAsset loadedJsonFile = Resources.Load<TextAsset>(_filename);
+
+        string content = loadedJsonFile.text;
+        QuestionCatalogue catalog = JsonUtility.FromJson<QuestionCatalogue>(content);
+
+        if (catalog != null)
+        {
+            saveQuestionCatalogueToJson(catalog);
+        }
+
+        return catalog;
+    }
+
     public List<QuestionCatalogue> loadQuestionCataloguesFromJson()
     {
         string extension = "*.qcat";
