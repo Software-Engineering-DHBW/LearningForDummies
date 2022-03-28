@@ -406,6 +406,11 @@ public class SaveManager : MonoBehaviour
             playerProfile = new PlayerProfile();
             playerProfile.userName = username;
             SaveSystem.instance.savePlayerProfileToJson(playerProfile);
+
+            questionCatalogueList.Add(SaveSystem.instance.addStandard("Funknetze"));
+            questionCatalogueList.Add(SaveSystem.instance.addStandard("Machine_Learning"));
+            questionCatalogueList.Add(SaveSystem.instance.addStandard("Verteilte_Systeme"));
+
             playerProfileStatistics();
             username_Panel.SetActive(false);
         }
