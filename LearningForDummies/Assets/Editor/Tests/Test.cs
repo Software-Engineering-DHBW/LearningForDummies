@@ -36,13 +36,11 @@ public class Test
     }
 
     [Test]
-    public void loadCatalougesReturnsNull()
+    public void loadCatalougesReturnsList()
     {
         SaveSystem saveSystem = new SaveSystem();
         var answer = saveSystem.loadQuestionCataloguesFromJson();
-        //Assert.IsInstanceOf<List<QuestionCatalogue>>(answer);
-        Assert.AreEqual(answer, null);
-        //should be null if there are no catalogues
+        Assert.IsInstanceOf<List<QuestionCatalogue>>(answer);
         //should be of type List<QuestionCatalogues> if something is found in the foulder
     }
 
