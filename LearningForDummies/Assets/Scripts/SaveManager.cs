@@ -18,7 +18,6 @@ public class SaveManager : MonoBehaviour
 
     [Header("Import UI")]
     public TMP_InputField rawJsonText_InputField;
-    public TMP_InputField enteredCatalogueName;
 
     [Header("PlayerProfile Stuff")]
     public static PlayerProfile playerProfile;
@@ -92,14 +91,21 @@ public class SaveManager : MonoBehaviour
 
     public void saveImportedQuestionCatalogueToFileSystem()
     {
-        if (string.IsNullOrWhiteSpace(enteredCatalogueName.text) || string.IsNullOrWhiteSpace(rawJsonText_InputField.text))
+        if (string.IsNullOrWhiteSpace(rawJsonText_InputField.text))
         {
             Debug.Log("ERROR: Katalogname oder Import-Textfeld sind leer!");
             return;
         }
         else
         {
-            SaveSystem.instance.saveRawJsonTextToJson(enteredCatalogueName.text, rawJsonText_InputField.text);
+            string fileName = rawJsonText_InputField.text.Remove(0,13);
+            int index = fileName.IndexOf('"');
+            //print(index);
+            fileName = fileName.Substring(0, index);
+            //print(fileName);
+
+
+            SaveSystem.instance.saveRawJsonTextToJson(fileName, rawJsonText_InputField.text);
             questionCatalogueList = SaveSystem.instance.loadQuestionCataloguesFromJson();
             playerProfileStatistics();
             clearImportInputFields();
@@ -108,7 +114,6 @@ public class SaveManager : MonoBehaviour
 
     public void clearImportInputFields()
     {
-        enteredCatalogueName.text = "";
         rawJsonText_InputField.text = "";
     }
 
