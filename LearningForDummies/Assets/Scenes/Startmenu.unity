@@ -2620,7 +2620,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540.00006, y: -150.43474}
+  m_AnchoredPosition: {x: 540.00006, y: -150.43475}
   m_SizeDelta: {x: 1080, y: 220.86957}
   m_Pivot: {x: 0.50000006, y: 0.5000002}
 --- !u!114 &161750221
@@ -22569,7 +22569,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: -82.608696}
+  m_AnchoredPosition: {x: 540, y: -82.6087}
   m_SizeDelta: {x: 1080, y: 165.21739}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1517210119
@@ -24462,6 +24462,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c8d4241f4913ccd4eb86cdffc0fe820a, type: 3}
   - {fileID: 21300000, guid: 29111e15ae7927345a9b635dd88a18ba, type: 3}
   - {fileID: 21300000, guid: 9afddff887c2f9947bfa96f4e4898f7e, type: 3}
+  - {fileID: 21300000, guid: c0a1797e3d93cad49bd3efb120e7a025, type: 3}
+  - {fileID: 21300000, guid: 4b370f36282976041aca120f7be82aa2, type: 3}
+  - {fileID: 21300000, guid: 87bc0eba630f8964eab82bbf0d8dd1e2, type: 3}
+  - {fileID: 21300000, guid: 780b5dfc3ac30b94aa643e05400f376e, type: 3}
+  - {fileID: 21300000, guid: c1a02544918444144bb712eb3ccd4964, type: 3}
   username_Panel: {fileID: 1837285062}
   questionCount_Label: {fileID: 842266510}
   profilePicture: {fileID: 1325832904}
@@ -27665,7 +27670,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 540, y: -155.43047}
+  m_AnchoredPosition: {x: 540, y: -155.43048}
   m_SizeDelta: {x: 1040, y: 270.86093}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2089926460
