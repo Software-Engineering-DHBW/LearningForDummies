@@ -32,7 +32,7 @@ public class Test
         SaveSystem saveSystem = new SaveSystem();
         var answer = saveSystem.loadPlayerProfileFromJson(profileName);
         Assert.AreEqual(answer, null);
-        //should be null when the app is shipped because there is no profile
+        //should be null for all test values because the ral name is Player.pp
     }
 
     [Test]
